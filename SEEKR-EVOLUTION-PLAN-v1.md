@@ -1,8 +1,8 @@
 # SeekR Evolution — Architecture Plan v1.0
 
 **Date:** 2026-04-03
-**Status:** v1.1 — geo-tracker ENGINE_MAP + Visibility Scoring integrated
-**Based on:** CLAWD-CODE architecture analysis + geo-tracker patterns + GEO/SEO domain expertise
+**Status:** v1.2 — Openclaw compatibility layer + dual-market SHEEP
+**Based on:** CLAWD-CODE + geo-tracker + Openclaw GEO skills + GEO/SEO domain expertise
 
 ---
 
@@ -573,13 +573,219 @@ PriceFocused: "How does {brand}'s pricing compare to competitors?"
 
 ---
 
-## 10. References
+## 10. Openclaw Compatibility Layer (v1.2)
+
+**Source:** `geo-seo-openclaw-skills` — SEO/GEO skills library with dual-market support
+
+### 10.1 Compatibility Strategy
+
+SeekR operates as a **superset** of Openclaw. The compatibility layer allows:
+- Openclaw trigger words route to Openclaw engine (dual-market scoring)
+- SeekR trigger words route to SeekR native engine (ENGINE_MAP + self-evolution)
+- Both share the same `geo_optimizer.py` (unified SHEEP framework)
+
+### 10.2 Architecture
+
+```
+SeekR (Superset)
+    │
+    ├── seekr-SKILL.md          ← 4 workflows, self-evolution
+    │
+    └── openclaw-adapter/       ← Compatibility layer
+        ├── trigger_translator.py     # Trigger word mapping
+        ├── compat_optimizer.py       # Dual-market SHEEP
+        ├── openclaw-skills/          # Openclaw skills subset
+        │   └── geo-site-audit/
+        └── compat_registry.json      # Openclaw skills registration
+```
+
+### 10.3 Trigger Word Translation
+
+```python
+OPENCLAW_TO_SEEKR = {
+    "GEO审计": "seekr audit --engine=openclaw",
+    "AI可见性分析": "seekr audit --geo --engine=openclaw",
+    "全站GEO优化": "seekr optimize --full-site --engine=openclaw",
+    "独立站GEO": "seekr audit --independent --engine=openclaw",
+    # Openclaw Chinese platform triggers
+    "通义千问优化": "seekr optimize --platform=tongyi",
+    "文心一言优化": "seekr optimize --platform=ernie",
+}
+
+SEEKR_TO_OPENCLAW = {
+    "S": "semantic_coverage",
+    "H": "human_credibility",
+    "E1": "evidence_structuring",
+    "E2": "ecosystem_integration",
+    "P": "performance_monitoring",
+}
+```
+
+### 10.4 Dual-Market SHEEP
+
+Openclaw extends SHEEP with Chinese platform weights:
+
+```python
+@dataclass
+class SHEEPScores:
+    # International dimensions (SeekR standard)
+    S: float = 0   # Semantic Coverage (25%)
+    H: float = 0   # Human Credibility (25%)
+    E1: float = 0  # Evidence Structuring (20%)
+    E2: float = 0  # Ecosystem Integration (15%)
+    P: float = 0   # Performance (15%)
+
+    # Chinese market extensions (Openclaw compatibility)
+    tongyi_score: float = 0    # 通义千问  权重15%
+    doubao_score: float = 0   # 豆包      权重14%
+    ernie_score: float = 0    # 文心一言  权重13%
+    glm_score: float = 0      # GLM-4    权重12%
+    deepseek_score: float = 0 # DeepSeek 权重10%
+```
+
+### 10.5 Dual-Engine Routing
+
+```python
+def route_intent(prompt: str) -> tuple[str, str]:
+    """
+    Returns (workflow, engine)
+
+    "帮我审计网站GEO" → ("audit", "openclaw")  # Openclaw trigger
+    "audit my site"     → ("audit", "seekr")   # SeekR native
+    "evolve"           → ("evolve", "seekr")  # SeekR exclusive
+    """
+    openclaw_triggers = {"GEO审计", "AI可见性", "全站GEO", "独立站GEO",
+                         "通义千问", "文心一言", "豆包", "GLM", "DeepSeek"}
+    if any(t in prompt for t in openclaw_triggers):
+        return ("audit", "openclaw")
+    return ("audit", "seekr")  # default to SeekR native
+```
+
+### 10.6 Openclaw Skills Subset
+
+| Openclaw Skill | SeekR Integration |
+|---|---|
+| `geo-site-audit` | Workflow A engine option (dual-market SHEEP) |
+| `geo-content-optimizer` | Workflow B (keyword optimization) |
+| `schema-markup-generator` | Workflow C (schema output) |
+
+### 10.7 Platform Optimization Mapping
+
+| Platform | Openclaw Focus | SeekR ENGINE_MAP |
+|---|---|---|
+| ChatGPT | 权威性+凭证 | ENGINE_MAP["chatgpt"] |
+| Perplexity | 新鲜度+引用 | ENGINE_MAP["perplexity"] |
+| Claude | 准确性+来源 | ENGINE_MAP["claude"] |
+| Gemini | 社区+本地信号 | ENGINE_MAP["gemini"] |
+| 通义千问 | 商业应用场景 | Openclaw adapter |
+| 文心一言 | 搜索+知识图谱 | Openclaw adapter |
+| 豆包 | 中文自然理解 | Openclaw adapter |
+| DeepSeek | 技术深度 | Openclaw adapter |
+
+---
+
+## 11. Implementation Phases (v1.2)
+
+### Phase 1: Core Integration (v1.0)
+- [x] `seekr` skill: 4 workflows (A/B/C/D) with SHEEP scoring
+- [x] `seekr-evolve` skill: Effect Collector + Pattern Recognizer
+- [x] `SKILLS-REGISTRY.json`: All integrated skills
+- [x] `geo_optimizer.py`: SHEEP scoring engine
+
+### Phase 2: geo-tracker Integration (v1.1)
+- [x] ENGINE_MAP + visibility scoring algorithm analyzed
+- [ ] ENGINE_MAP integration into Workflow C
+- [ ] Batch audit for daily Workflow A sweep
+- [ ] Banded visibility scoring (0–100, 5 bands)
+- [ ] Prompt customization A/B testing
+
+### Phase 3: Openclaw Compatibility (v1.2)
+- [ ] `openclaw-adapter/` directory structure
+- [ ] `trigger_translator.py` — Openclaw↔SeekR trigger mapping
+- [ ] `compat_optimizer.py` — Dual-market SHEEP (international + Chinese)
+- [ ] Openclaw skills subset (`geo-site-audit`) adapted
+- [ ] Dual-engine routing in seekr orchestrator
+- [ ] Chinese platform optimization (通义千问/文心一言/豆包/DeepSeek)
+
+### Phase 4: Full Autonomy (v1.3)
+- [ ] Auto-rollback on z-score < -3.0
+- [ ] Scheduled evolution (daily at 03:00 UTC)
+- [ ] Pattern ROI tracking
+- [ ] Evolution Cost Model
+
+---
+
+## 12. File Structure (v1.2 Target)
+
+```
+seekr/
+├── README.md
+├── CLAWD-CODE-DEEP-ANALYSIS.md
+├── SEEKR-EVOLUTION-PLAN-v1.md
+├── SKILLS-REGISTRY.json
+├── seekr-SKILL.md                   ← /seekr
+├── seekr-evolve-SKILL.md            ← /seekr-evolve
+│
+├── openclaw-adapter/                ← Openclaw compatibility (v1.2)
+│   ├── __init__.py
+│   ├── trigger_translator.py         # Trigger word mapping
+│   ├── compat_optimizer.py           # Dual-market SHEEP
+│   ├── openclaw-skills/             # Openclaw skills subset
+│   │   └── geo-site-audit/
+│   │       └── SKILL.md
+│   └── compat_registry.json         # Openclaw skills registration
+│
+├── geo_tracker/                    ← geo-tracker integration (v1.1)
+│   ├── __init__.py
+│   ├── engine_map.py                # Multi-engine dispatch
+│   ├── visibility_scorer.py         # Banded scoring (0-100, 5 bands)
+│   ├── batch_audit.py               # Daily sweep workflow
+│   ├── prompts.txt                  # Customizable prompt library
+│   └── geo-optimization.md          # Optimization playbook
+│
+└── evolution/
+    ├── __init__.py
+    ├── evolution-patterns/           # Snapshot store (Pattern 1)
+    │   ├── evolution-snapshot.json
+    │   ├── skill-registry.json
+    │   └── sheep-baseline.json
+    ├── parity_audit.py               # 5-dim parity (Pattern 2)
+    ├── evolution_intent.py           # Token routing (Pattern 3)
+    ├── evolution_history.py          # Event log (Pattern 4)
+    ├── evolution_cost.py             # Cost tracker (Pattern 5)
+    ├── evolution_backlog.py           # Candidate queue (Pattern 6)
+    ├── evolution_tools.py            # Tool registry (Pattern 7)
+    └── feedback_loop.py              # Core innovation
+```
+
+---
+
+## 13. Key Differences from CLAWD-CODE
+
+| Dimension | CLAWD-CODE | SeekR |
+|---|---|---|
+| **Purpose** | Static TypeScript→Python mirroring | Dynamic self-evolving agent |
+| **Feedback Loop** | None | Full: event → score → adjustment |
+| **Snapshot Data** | Static reference only | Dynamic with version history |
+| **Parity Audit** | File presence only | Capability coverage |
+| **Routing** | Static token scoring | Dynamic with feedback adjustment |
+| **Error Recovery** | None | Auto-rollback via z-score |
+| **Cost Model** | Simple accumulator | ROI-based |
+| **Multi-Engine** | Single engine only | ENGINE_MAP: ChatGPT/Perplexity/Gemini/Claude |
+| **Visibility Score** | Generic 0–100 | Banded: Invisible/Low/Moderate/Strong/Dominant |
+| **Audit Scope** | Single pass | Batch sweep across all engines daily |
+| **Openclaw Compat** | No | Yes: dual-engine routing + dual-market SHEEP |
+
+---
+
+## 14. References
 
 - **CLAWD-CODE:** https://github.com/godfalcon/clawd-code
 - **SheepGeo SHEEP Framework:** https://github.com/CN-Sheep/SheepGeo
 - **SeekR GitHub:** https://github.com/muzhi-tech/SeekR
-- **geo-tracker:** https://github.com (real API-based GEO tracking, ENGINE_MAP pattern)
+- **geo-tracker:** Real API-based GEO tracking, ENGINE_MAP pattern
+- **Openclaw GEO Skills:** `geo-seo-openclaw-skills` — dual-market GEO skills
 
 ---
 
-**Version: 1.1.0 — geo-tracker ENGINE_MAP + Visibility Scoring integrated**
+**Version: 1.2.0 — Openclaw compatibility layer + dual-market SHEEP + ENGINE_MAP**
