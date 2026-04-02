@@ -1,0 +1,326 @@
+{
+  "registry_version": "1.0.0",
+  "generated_at": "2026-04-03T00:00:00Z",
+  "description": "SEO/GEO Skills Registry for seo-geo-master-orchestrator and seo-geo-evolution-engine",
+
+  "orchestrator": {
+    "skill_id": "seo-geo-master-orchestrator",
+    "version": "1.0.0",
+    "location": "~/.claude/skills/seo-geo-master-orchestrator/SKILL.md",
+    "workflows": ["WORKFLOW_A", "WORKFLOW_B", "WORKFLOW_C", "WORKFLOW_D"],
+    "entry_points": [
+      "seo", "geo", "geo-site-audit", "seo-audit",
+      "keyword-research", "serp-analysis", "competitor-analysis",
+      "technical-seo", "schema-markup", "backlink-analyzer"
+    ]
+  },
+
+  "evolution_engine": {
+    "skill_id": "seo-geo-evolution-engine",
+    "version": "1.0.0",
+    "location": "~/.claude/skills/seo-geo-evolution-engine/SKILL.md",
+    "components": [
+      "EffectCollector",
+      "PatternRecognizer",
+      "StrategyGenerator",
+      "ABTestController",
+      "SnapshotVersioning",
+      "ParityAudit"
+    ],
+    "entry_points": [
+      "evolve", "optimize skills", "check skill health",
+      "run parity audit", "trigger evolution"
+    ]
+  },
+
+  "integrated_skills": {
+    "orchestrator_skills": [
+      {
+        "skill_id": "seo-audit",
+        "type": "skill",
+        "location": "~/.claude/skills/seo-audit/",
+        "used_in": ["WORKFLOW_A"],
+        "role": "Full website SEO audit",
+        "dependencies": ["seo-technical", "seo-content", "seo-schema", "seo-competitor-pages"]
+      },
+      {
+        "skill_id": "seo-technical",
+        "type": "subagent",
+        "location": "~/.claude/skills/seo/agents/seo-technical.md",
+        "used_in": ["WORKFLOW_A", "WORKFLOW_B"],
+        "role": "Technical SEO: crawlability, Core Web Vitals, indexability",
+        "sheep_dimension": "P_performance_monitoring"
+      },
+      {
+        "skill_id": "seo-content",
+        "type": "subagent",
+        "location": "~/.claude/skills/seo/agents/seo-content.md",
+        "used_in": ["WORKFLOW_A", "WORKFLOW_B", "WORKFLOW_D"],
+        "role": "E-E-A-T content quality assessment",
+        "sheep_dimension": "H_human_credibility"
+      },
+      {
+        "skill_id": "seo-schema",
+        "type": "subagent",
+        "location": "~/.claude/skills/seo/agents/seo-schema.md",
+        "used_in": ["WORKFLOW_A", "WORKFLOW_B", "WORKFLOW_D"],
+        "role": "Schema.org markup detection, validation, generation",
+        "sheep_dimension": "E1_evidence_structuring"
+      },
+      {
+        "skill_id": "seo-competitor-pages",
+        "type": "skill",
+        "location": "~/.claude/skills/seo-competitor-pages/",
+        "used_in": ["WORKFLOW_A"],
+        "role": "Competitor pages analysis"
+      },
+      {
+        "skill_id": "geo-audit",
+        "type": "skill",
+        "location": "~/.claude/skills/geo-audit/",
+        "used_in": ["WORKFLOW_A"],
+        "role": "Full GEO audit with AI citability scoring",
+        "dependencies": ["geo-ai-visibility", "geo-platform-analysis", "geo-technical", "geo-content", "geo-schema"]
+      },
+      {
+        "skill_id": "geo-ai-visibility",
+        "type": "agent",
+        "location": "~/.claude/agents/geo-ai-visibility.md",
+        "used_in": ["WORKFLOW_A"],
+        "role": "AI visibility scoring: citability, crawlers, llms.txt, brand mentions",
+        "sheep_dimension": "E2_ecosystem_integration"
+      },
+      {
+        "skill_id": "geo-brand-mentions",
+        "type": "skill",
+        "location": "~/.claude/skills/geo-brand-mentions/",
+        "used_in": ["WORKFLOW_A", "WORKFLOW_C"],
+        "role": "Brand mention scanning: YouTube, Reddit, Wikipedia, LinkedIn",
+        "sheep_dimension": "E2_ecosystem_integration"
+      },
+      {
+        "skill_id": "geo-schema",
+        "type": "agent",
+        "location": "~/.claude/agents/geo-schema.md",
+        "used_in": ["WORKFLOW_A", "WORKFLOW_C"],
+        "role": "GEO-specific Schema markup audit and generation",
+        "sheep_dimension": "E1_evidence_structuring"
+      },
+      {
+        "skill_id": "geo-technical",
+        "type": "agent",
+        "location": "~/.claude/agents/geo-technical.md",
+        "used_in": ["WORKFLOW_A", "WORKFLOW_C"],
+        "role": "Technical GEO: SSR, AI crawler access, llms.txt",
+        "sheep_dimension": "P_performance_monitoring"
+      },
+      {
+        "skill_id": "geo-content",
+        "type": "agent",
+        "location": "~/.claude/agents/geo-content.md",
+        "used_in": ["WORKFLOW_A", "WORKFLOW_C", "WORKFLOW_D"],
+        "role": "GEO content optimization: E-E-A-T for AI citability",
+        "sheep_dimension": "H_human_credibility"
+      },
+      {
+        "skill_id": "geo-platform-analysis",
+        "type": "agent",
+        "location": "~/.claude/agents/geo-platform-analysis.md",
+        "used_in": ["WORKFLOW_A", "WORKFLOW_C"],
+        "role": "Platform-specific optimization: Google AIO, ChatGPT, Perplexity, Gemini"
+      },
+      {
+        "skill_id": "geo-citability",
+        "type": "skill",
+        "location": "~/.claude/skills/geo-citability/",
+        "used_in": ["WORKFLOW_C"],
+        "role": "Passage-level AI citability scoring"
+      },
+      {
+        "skill_id": "geo-crawlers",
+        "type": "skill",
+        "location": "~/.claude/skills/geo-crawlers/",
+        "used_in": ["WORKFLOW_C"],
+        "role": "AI crawler access analysis: robots.txt, meta tags, HTTP headers"
+      },
+      {
+        "skill_id": "geo-llmstxt",
+        "type": "skill",
+        "location": "~/.claude/skills/geo-llmstxt/",
+        "used_in": ["WORKFLOW_C"],
+        "role": "llms.txt analysis and generation"
+      },
+      {
+        "skill_id": "geo-platform-optimizer",
+        "type": "skill",
+        "location": "~/.claude/skills/geo-platform-optimizer/",
+        "used_in": ["WORKFLOW_C"],
+        "role": "Platform-specific AI search optimization"
+      },
+      {
+        "skill_id": "keyword-research",
+        "type": "skill",
+        "location": "~/.claude/skills/keyword-research/",
+        "used_in": ["WORKFLOW_B", "WORKFLOW_D"],
+        "role": "Keyword discovery, intent classification, difficulty scoring",
+        "sheep_dimension": "S_semantic_coverage"
+      },
+      {
+        "skill_id": "serp-analysis",
+        "type": "skill",
+        "location": "~/.claude/skills/serp-analysis/",
+        "used_in": ["WORKFLOW_B", "WORKFLOW_D"],
+        "role": "SERP composition analysis, ranking factor identification",
+        "sheep_dimension": "S_semantic_coverage"
+      },
+      {
+        "skill_id": "content-gap-analysis",
+        "type": "skill",
+        "location": "~/.claude/skills/content-gap-analysis/",
+        "used_in": ["WORKFLOW_B", "WORKFLOW_D"],
+        "role": "Keyword gap analysis, topic coverage mapping",
+        "sheep_dimension": "S_semantic_coverage"
+      },
+      {
+        "skill_id": "seo-content-writer",
+        "type": "skill",
+        "location": "~/.claude/skills/seo-content-writer/",
+        "used_in": ["WORKFLOW_D"],
+        "role": "SEO-optimized content creation",
+        "sheep_dimension": "H_human_credibility",
+        "is_workflow_d_core": true
+      },
+      {
+        "skill_id": "geo-content-optimizer",
+        "type": "skill",
+        "location": "~/.claude/skills/geo-content-optimizer/",
+        "used_in": ["WORKFLOW_D"],
+        "role": "GEO-specific content optimization for AI citability",
+        "sheep_dimension": "H_human_credibility",
+        "is_workflow_d_core": true
+      },
+      {
+        "skill_id": "meta-tags-optimizer",
+        "type": "skill",
+        "location": "~/.claude/skills/meta-tags-optimizer/",
+        "used_in": ["WORKFLOW_B", "WORKFLOW_D"],
+        "role": "Title tag and meta description optimization",
+        "sheep_dimension": "S_semantic_coverage"
+      },
+      {
+        "skill_id": "schema-markup-generator",
+        "type": "skill",
+        "location": "~/.claude/skills/schema-markup-generator/",
+        "used_in": ["WORKFLOW_B", "WORKFLOW_D"],
+        "role": "JSON-LD schema markup generation",
+        "sheep_dimension": "E1_evidence_structuring",
+        "is_workflow_d_core": true
+      },
+      {
+        "skill_id": "internal-linking-optimizer",
+        "type": "skill",
+        "location": "~/.claude/skills/internal-linking-optimizer/",
+        "used_in": ["WORKFLOW_B", "WORKFLOW_D"],
+        "role": "Internal link architecture analysis and recommendations"
+      },
+      {
+        "skill_id": "backlink-analyzer",
+        "type": "skill",
+        "location": "~/.claude/skills/backlink-analyzer/",
+        "used_in": ["WORKFLOW_A"],
+        "role": "Backlink profile analysis, toxic link detection"
+      },
+      {
+        "skill_id": "rank-tracker",
+        "type": "skill",
+        "location": "~/.claude/skills/rank-tracker/",
+        "used_in": ["WORKFLOW_D"],
+        "role": "Keyword ranking monitoring and trend analysis"
+      },
+      {
+        "skill_id": "geo-report",
+        "type": "skill",
+        "location": "~/.claude/skills/geo-report/",
+        "used_in": ["WORKFLOW_A", "WORKFLOW_C"],
+        "role": "Client-facing GEO report generation"
+      },
+      {
+        "skill_id": "geo-report-pdf",
+        "type": "skill",
+        "location": "~/.claude/skills/geo-report-pdf/",
+        "used_in": ["WORKFLOW_A", "WORKFLOW_C"],
+        "role": "Professional PDF report generation"
+      },
+      {
+        "skill_id": "seo-page",
+        "type": "skill",
+        "location": "~/.claude/skills/seo-page/",
+        "used_in": ["WORKFLOW_B"],
+        "role": "Single page SEO audit"
+      },
+      {
+        "skill_id": "seo-sitemap",
+        "type": "skill",
+        "location": "~/.claude/skills/seo-sitemap/",
+        "used_in": ["WORKFLOW_A"],
+        "role": "XML sitemap validation and generation"
+      },
+      {
+        "skill_id": "seo-local",
+        "type": "skill",
+        "location": "~/.claude/skills/seo-local/",
+        "used_in": ["WORKFLOW_A"]
+      },
+      {
+        "skill_id": "seo-maps",
+        "type": "skill",
+        "location": "~/.claude/skills/seo-maps/",
+        "used_in": ["WORKFLOW_A"]
+      },
+      {
+        "skill_id": "domain-authority-auditor",
+        "type": "skill",
+        "location": "~/.claude/skills/domain-authority-auditor/",
+        "used_in": ["WORKFLOW_A"],
+        "sheep_dimension": "E2_ecosystem_integration"
+      }
+    ]
+  },
+
+  "external_tools": {
+    "geo_optimizer_py": {
+      "location": "D:/project/trae/geo-seo-openclaw-skills/scripts/geo_optimizer.py",
+      "purpose": "SHEEP framework scoring engine",
+      "outputs": ["S_semantic_coverage", "H_human_credibility", "E1_evidence_structuring", "E2_ecosystem_integration", "P_performance_monitoring"],
+      "used_by": ["seo-geo-master-orchestrator", "seo-geo-evolution-engine"]
+    },
+    "platforms_json": {
+      "location": "D:/project/trae/geo-seo-openclaw-skills/config/platforms.json",
+      "purpose": "Platform-specific optimization parameters",
+      "platforms": ["chatgpt", "perplexity", "claude", "gemini", "google_ai_overview"]
+    },
+    "llms_txt_template": {
+      "location": "D:/project/trae/geo-seo-openclaw-skills/templates/llms.txt.template",
+      "purpose": "llms.txt generation template"
+    }
+  },
+
+  "data_paths": {
+    "evolution_metrics": "seekr/evolution-metrics/",
+    "skills_snapshots": "seekr/skills-snapshots/",
+    "article_output": "seekr/articles/",
+    "audit_reports": "seekr/reports/"
+  },
+
+  "sheep_framework": {
+    "dimensions": [
+      { "name": "S_semantic_coverage", "weight": 0.25, "description": "Keywords, content depth, topic coverage" },
+      { "name": "H_human_credibility", "weight": 0.25, "description": "Author credentials, citations, E-E-A-T signals" },
+      { "name": "E1_evidence_structuring", "weight": 0.20, "description": "Schema markup, tables, FAQ" },
+      { "name": "E2_ecosystem_integration", "weight": 0.15, "description": "Social signals, external links, brand consistency" },
+      { "name": "P_performance_monitoring", "weight": 0.15, "description": "Content freshness, update frequency, technical performance" }
+    ],
+    "formula": "GEM = S*0.25 + H*0.25 + E1*0.20 + E2*0.15 + P*0.15",
+    "source": "SheepGeo framework (CN-Sheep/SheepGeo)"
+  }
+}
