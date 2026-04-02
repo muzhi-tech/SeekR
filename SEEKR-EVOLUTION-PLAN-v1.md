@@ -1,8 +1,8 @@
 # SeekR Evolution — Architecture Plan v1.0
 
 **Date:** 2026-04-03
-**Status:** Baseline v1.0 — Implementation Planned
-**Based on:** CLAWD-CODE architecture analysis + GEO/SEO domain expertise
+**Status:** v1.1 — geo-tracker ENGINE_MAP + Visibility Scoring integrated
+**Based on:** CLAWD-CODE architecture analysis + geo-tracker patterns + GEO/SEO domain expertise
 
 ---
 
@@ -61,10 +61,10 @@ run_parity_audit() → reports gaps → NO automatic remediation
 ┌─────────────────────────────────────────────────────────────────────┐
 │                        seekr (Orchestrator)                          │
 │                                                                      │
-│   Workflow A — Full SEO+GEO Audit                                   │
+│   Workflow A — Full SEO+GEO Audit  ←──→  geo_tracker batch_audit   │
 │   Workflow B — Keyword-Driven Optimization                            │
-│   Workflow C — GEO AI Visibility Enhancement                          │
-│   Workflow D — GEO Article Auto-Generation                            │
+│   Workflow C — GEO AI Visibility  ←──→  ENGINE_MAP (4 engines)      │
+│   Workflow D — GEO Article Auto-Generation                           │
 └───────────────────────────────┬───────────────────────────────────────┘
                                 │
                 ┌───────────────┼───────────────┐
@@ -423,6 +423,7 @@ def should_auto_rollback(gem_delta: float, z_score: float) -> bool:
 - [x] `seekr-evolve` skill: Effect Collector + Pattern Recognizer
 - [x] `SKILLS-REGISTRY.json`: All integrated skills
 - [x] `geo_optimizer.py`: SHEEP scoring engine
+- [x] **geo-tracker**: ENGINE_MAP + visibility scoring algorithm analyzed
 - [ ] **NEW**: `evolution-patterns/` JSON snapshots
 - [ ] **NEW**: Evolution Feedback Loop (history → score adjustment)
 - [ ] **NEW**: Parity Audit (5-dim coverage check)
@@ -432,6 +433,10 @@ def should_auto_rollback(gem_delta: float, z_score: float) -> bool:
 - [ ] A/B Test Controller (10% traffic, p<0.05)
 - [ ] Snapshot Versioning (draft → candidate → stable)
 - [ ] Token-based Evolution Intent Detection
+- [ ] **geo-tracker**: ENGINE_MAP integration into Workflow C
+- [ ] **geo-tracker**: Batch audit for daily Workflow A sweep
+- [ ] **geo-tracker**: Banded visibility scoring (0–100, 5 bands)
+- [ ] **geo-tracker**: Prompt customization A/B testing
 
 ### Phase 3: Full Autonomy (v1.2)
 - [ ] Auto-rollback on z-score < -3.0
@@ -441,7 +446,7 @@ def should_auto_rollback(gem_delta: float, z_score: float) -> bool:
 
 ---
 
-## 7. File Structure (v1.0 Target)
+## 7. File Structure (v1.1 Target)
 
 ```
 seekr/
@@ -451,6 +456,14 @@ seekr/
 ├── SKILLS-REGISTRY.json
 ├── seekr-SKILL.md                   ← /seekr
 ├── seekr-evolve-SKILL.md            ← /seekr-evolve
+│
+├── geo_tracker/                    ← geo-tracker integration (v1.1)
+│   ├── __init__.py
+│   ├── engine_map.py                ← Multi-engine dispatch (ChatGPT/Perplexity/Gemini/Claude)
+│   ├── visibility_scorer.py         ← Banded scoring (0-100, 5 bands)
+│   ├── batch_audit.py               ← Daily sweep workflow
+│   ├── prompts.txt                  ← Customizable prompt library
+│   └── geo-optimization.md          ← Optimization playbook
 │
 └── evolution/
     ├── __init__.py
@@ -480,15 +493,93 @@ seekr/
 | **Routing** | Static token scoring | Dynamic with feedback adjustment |
 | **Error Recovery** | None | Auto-rollback via z-score |
 | **Cost Model** | Simple accumulator | ROI-based |
+| **Multi-Engine** | Single engine only | ENGINE_MAP: ChatGPT/Perplexity/Gemini/Claude |
+| **Visibility Score** | Generic 0–100 | Banded: Invisible/Low/Moderate/Strong/Dominant |
+| **Audit Scope** | Single pass | Batch sweep across all engines daily |
 
 ---
 
-## 9. References
+## 9. geo-tracker Integration (v1.1 additions)
+
+**Source:** `geo-tracker-1.0.0` (real API-based multi-engine querying)
+
+### 9.1 ENGINE_MAP Dispatch Pattern
+
+geo-tracker provides a concrete implementation of multi-engine dispatch:
+
+```python
+ENGINE_MAP = {
+    "chatgpt": query_chatgpt,
+    "perplexity": query_perplexity,
+    "gemini": query_gemini,
+    "claude": query_claude,
+}
+
+def query_brand_across_engines(brand: str, engines: list[str], prompt: str) -> dict:
+    results = {}
+    for engine in engines:
+        results[engine] = ENGINE_MAP[engine](brand, prompt)
+    return results
+```
+
+**SeekR Integration:** Use ENGINE_MAP in Workflow C (GEO Visibility) to query all 4 engines simultaneously.
+
+### 9.2 Visibility Scoring Algorithm
+
+geo-tracker defines a concrete 0–100 scoring with 5 bands:
+
+| Score | Band | Description |
+|-------|------|-------------|
+| 0–20 | **Invisible** | Brand not mentioned |
+| 21–40 | **Low** |偶尔提及，无推荐 |
+| 41–60 | **Moderate** | 有提及但非首选 |
+| 61–80 | **Strong** | 被推荐，有详细理由 |
+| 81–100 | **Dominant** | 首推，答案结构完整 |
+
+**Concrete algorithm:**
+```python
+visibility = min(100,
+    (mentions * 20) +           # Raw mention count
+    position_score * 0.5 +      # SERP position bonus
+    (30 if is_recommended else 0)  # Recommendation flag
+)
+```
+
+**SeekR Integration:** Replace generic SHEEP scoring with geo-tracker's banded visibility scores for cross-engine comparison.
+
+### 9.3 Batch Audit Workflow
+
+```python
+def run_batch_audit(brands: list[str], engines: list[str], output_dir: str):
+    for brand in brands:
+        results = query_brand_across_engines(brand, engines, get_prompt(brand))
+        score = sum_engine_scores(results)
+        save_result(brand, results, score)
+```
+
+**SeekR Integration:** Use batch audit for Workflow A daily sweep — audit all tracked sites across all engines in one cycle.
+
+### 9.4 Prompt Customization System
+
+geo-tracker uses a line-by-line prompt library (`prompts.txt`) that can be customized per audit:
+
+```
+BrandMention: "Can you recommend {category} tools or services? Consider {brand}"
+CompetitorFirst: "What are the top alternatives to {brand}?"
+PriceFocused: "How does {brand}'s pricing compare to competitors?"
+```
+
+**SeekR Integration:** Allow evolution engine to A/B test prompt variants to optimize recommendation rates per engine.
+
+---
+
+## 10. References
 
 - **CLAWD-CODE:** https://github.com/godfalcon/clawd-code
 - **SheepGeo SHEEP Framework:** https://github.com/CN-Sheep/SheepGeo
 - **SeekR GitHub:** https://github.com/muzhi-tech/SeekR
+- **geo-tracker:** https://github.com (real API-based GEO tracking, ENGINE_MAP pattern)
 
 ---
 
-**Version: 1.0.0 — Baseline for SeekR Evolution Architecture**
+**Version: 1.1.0 — geo-tracker ENGINE_MAP + Visibility Scoring integrated**
