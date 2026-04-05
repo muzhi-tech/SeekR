@@ -1,0 +1,32 @@
+{
+  "dimension_thresholds": {
+    "S_semantic_coverage": {"critical": 55, "warning": 65, "good": 75, "excellent": 85},
+    "H_human_credibility": {"critical": 50, "warning": 60, "good": 70, "excellent": 80},
+    "E1_evidence_structuring": {"critical": 45, "warning": 55, "good": 65, "excellent": 75},
+    "E2_ecosystem_integration": {"critical": 40, "warning": 50, "good": 60, "excellent": 70},
+    "P_performance_monitoring": {"critical": 45, "warning": 55, "good": 65, "excellent": 75}
+  },
+  "gem_bands": {
+    "A": {"min": 85, "label": "Excellent"},
+    "B": {"min": 70, "label": "Good"},
+    "C": {"min": 55, "label": "Average"},
+    "D": {"min": 40, "label": "Below Average"},
+    "F": {"min": 0, "label": "Poor"}
+  },
+  "evolution_thresholds": {
+    "z_score_warning": -2.0,
+    "z_score_critical": -3.0,
+    "drift_threshold_pct": 15,
+    "trend_decline_pct": 10,
+    "min_consecutive_decline_days": 3,
+    "auto_rollback_z_score": -3.0
+  },
+  "ab_test_defaults": {
+    "traffic_split": 0.1,
+    "min_sample_size": 500,
+    "max_duration_days": 14,
+    "significance_level": 0.95,
+    "early_stop_threshold": 0.99,
+    "check_interval_hours": 4
+  }
+}

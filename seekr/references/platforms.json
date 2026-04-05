@@ -1,0 +1,54 @@
+{
+  "platforms": {
+    "chatgpt": {
+      "name": "ChatGPT",
+      "min_word_count": 1500,
+      "max_word_count": 2500,
+      "freshness_days": 90,
+      "required_elements": ["author_credentials", "primary_sources", "statistics"],
+      "sheep_priority": ["S", "H"],
+      "citation_style": "inline_with_quotes",
+      "optimization_notes": "Prefers comprehensive guides with expert quotes and statistics. +40% citation boost with author credentials."
+    },
+    "perplexity": {
+      "name": "Perplexity AI",
+      "min_word_count": 1200,
+      "max_word_count": 2000,
+      "freshness_days": 30,
+      "required_elements": ["inline_citations", "H2_H3_structure", "freshness_date"],
+      "sheep_priority": ["S", "E1", "P"],
+      "citation_style": "numbered_references",
+      "optimization_notes": "3.2x citation rate with fresh content (updated within 30 days). Prefers structured H2->H3->bullet format."
+    },
+    "google_ai_overview": {
+      "name": "Google AI Overview",
+      "min_word_count": 800,
+      "max_word_count": 1500,
+      "freshness_days": 60,
+      "required_elements": ["faq_schema", "direct_answer_first_150", "data_tables"],
+      "sheep_priority": ["E1", "P"],
+      "citation_style": "direct_answer",
+      "optimization_notes": "+13% coverage with FAQ Schema and data tables. Direct answer within first 150 chars critical."
+    },
+    "gemini": {
+      "name": "Google Gemini",
+      "min_word_count": 1000,
+      "max_word_count": 2000,
+      "freshness_days": 60,
+      "required_elements": ["structured_data", "knowledge_graph_signals", "external_links"],
+      "sheep_priority": ["E2", "S"],
+      "citation_style": "entity_based",
+      "optimization_notes": "Strong Google ecosystem integration needed. Values knowledge graph and schema data."
+    },
+    "claude": {
+      "name": "Claude (Anthropic)",
+      "min_word_count": 1200,
+      "max_word_count": 2500,
+      "freshness_days": 90,
+      "required_elements": ["balanced_perspective", "source_diversity", "clear_structure"],
+      "sheep_priority": ["H", "S"],
+      "citation_style": "balanced_attribution",
+      "optimization_notes": "Values balanced analysis, diverse sources, clear reasoning chains."
+    }
+  }
+}

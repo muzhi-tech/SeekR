@@ -1,0 +1,18 @@
+{
+  "execution_id": "exec-0037",
+  "timestamp": "2026-04-04T10:21:10.082758+00:00",
+  "workflow": "WORKFLOW_A",
+  "skill_name": "schema-markup",
+  "skill_version": "1.2.0",
+  "sheep_scores": {
+    "S": 64.6,
+    "H": 55.4,
+    "E1": 66.1,
+    "E2": 71.6,
+    "P": 74.1
+  },
+  "gem_score": 65.07,
+  "findings_count": 8,
+  "duration_ms": 21551,
+  "error_count": 1
+}

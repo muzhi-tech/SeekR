@@ -1,0 +1,18 @@
+{
+  "execution_id": "exec-0017",
+  "timestamp": "2026-04-03T14:21:10.082758+00:00",
+  "workflow": "WORKFLOW_C",
+  "skill_name": "geo-content",
+  "skill_version": "1.2.0",
+  "sheep_scores": {
+    "S": 57.3,
+    "H": 76.1,
+    "E1": 49.3,
+    "E2": 59.6,
+    "P": 70.4
+  },
+  "gem_score": 62.71,
+  "findings_count": 12,
+  "duration_ms": 26520,
+  "error_count": 0
+}

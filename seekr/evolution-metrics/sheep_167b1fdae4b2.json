@@ -1,0 +1,83 @@
+{
+  "execution_id": "4cce2d2be5d5",
+  "timestamp": "2026-04-04T23:20:18.853840+00:00",
+  "sheep_scores": {
+    "S": 80,
+    "H": 95,
+    "E1": 85,
+    "E2": 89,
+    "P": 85
+  },
+  "gem_score": 86.85,
+  "gem_band": "A",
+  "dimension_details": {
+    "S": {
+      "keyword_count": 30,
+      "content_depth": 25,
+      "topic_breadth": 16,
+      "semantic_density": 9
+    },
+    "H": {
+      "author_credentials": 25,
+      "citations_count": 20,
+      "eeat_signals": 25,
+      "statistics_present": 25
+    },
+    "E1": {
+      "schema_markup": 25,
+      "faq_present": 25,
+      "data_tables": 10,
+      "heading_structure": 25
+    },
+    "E2": {
+      "external_links": 18,
+      "social_signals": 21,
+      "brand_consistency": 25,
+      "nap_consistency": 25
+    },
+    "P": {
+      "content_freshness": 10,
+      "update_frequency": 25,
+      "technical_score": 25,
+      "mobile_friendly": 25
+    }
+  },
+  "platform_adjusted": {
+    "chatgpt": {
+      "gem": 91.1,
+      "priority_dims": [
+        "S",
+        "H"
+      ]
+    },
+    "perplexity": {
+      "gem": 94.3,
+      "priority_dims": [
+        "S",
+        "E1",
+        "P"
+      ]
+    },
+    "google_ai_overview": {
+      "gem": 91.3,
+      "priority_dims": [
+        "E1",
+        "P"
+      ]
+    },
+    "gemini": {
+      "gem": 91.5,
+      "priority_dims": [
+        "E2",
+        "S"
+      ]
+    },
+    "claude": {
+      "gem": 91.1,
+      "priority_dims": [
+        "H",
+        "S"
+      ]
+    }
+  }
+}

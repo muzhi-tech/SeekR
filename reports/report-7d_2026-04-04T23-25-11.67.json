@@ -1,0 +1,78 @@
+{
+  "timestamp": "2026-04-04T23:25:11.676116+00:00",
+  "window": "7d",
+  "total_executions": 50,
+  "gem_summary": {
+    "mean": 71.21,
+    "std": 4.56,
+    "min": 62.71,
+    "max": 79.25,
+    "count": 50
+  },
+  "gem_band": "B",
+  "trend": "stable",
+  "trend_change_pct": 0.2,
+  "sheep_trends": {
+    "S": "stable",
+    "H": "improving",
+    "E1": "stable",
+    "E2": "declining",
+    "P": "improving"
+  },
+  "dimension_table": [
+    {
+      "dim": "S",
+      "current": 73.1,
+      "7d_avg": 68.8,
+      "30d_avg": 71.2,
+      "change_pct": -3.3,
+      "status": "OK"
+    },
+    {
+      "dim": "H",
+      "current": 71.7,
+      "7d_avg": 71.8,
+      "30d_avg": 69.6,
+      "change_pct": 3.2,
+      "status": "OK"
+    },
+    {
+      "dim": "E1",
+      "current": 65.5,
+      "7d_avg": 67.7,
+      "30d_avg": 66.0,
+      "change_pct": 2.6,
+      "status": "OK"
+    },
+    {
+      "dim": "E2",
+      "current": 70.0,
+      "7d_avg": 66.7,
+      "30d_avg": 70.6,
+      "change_pct": -5.4,
+      "status": "OK"
+    },
+    {
+      "dim": "P",
+      "current": 76.1,
+      "7d_avg": 79.1,
+      "30d_avg": 76.5,
+      "change_pct": 3.5,
+      "status": "OK"
+    }
+  ],
+  "degradation_alerts": [],
+  "threshold_alerts": [
+    {
+      "dimension": "H",
+      "dimension_name": "Human Credibility",
+      "current_score": 56.6,
+      "status": "WARNING",
+      "critical_threshold": 50,
+      "warning_threshold": 60
+    }
+  ],
+  "active_tests": [],
+  "proposed_strategies": [],
+  "parity_summary": null
+}

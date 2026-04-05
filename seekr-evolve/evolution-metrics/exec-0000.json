@@ -1,0 +1,18 @@
+{
+  "execution_id": "exec-0000",
+  "timestamp": "2026-04-02T21:21:10.082758+00:00",
+  "workflow": "WORKFLOW_D",
+  "skill_name": "seo-audit",
+  "skill_version": "1.2.0",
+  "sheep_scores": {
+    "S": 83.5,
+    "H": 65.8,
+    "E1": 48.7,
+    "E2": 51.4,
+    "P": 77.3
+  },
+  "gem_score": 66.37,
+  "findings_count": 10,
+  "duration_ms": 55003,
+  "error_count": 2
+}

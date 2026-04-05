@@ -1,0 +1,18 @@
+{
+  "execution_id": "exec-0013",
+  "timestamp": "2026-04-03T10:21:10.082758+00:00",
+  "workflow": "WORKFLOW_D",
+  "skill_name": "on-page-seo",
+  "skill_version": "1.2.0",
+  "sheep_scores": {
+    "S": 84.8,
+    "H": 81.5,
+    "E1": 84.1,
+    "E2": 58.8,
+    "P": 78.4
+  },
+  "gem_score": 78.98,
+  "findings_count": 7,
+  "duration_ms": 14752,
+  "error_count": 0
+}

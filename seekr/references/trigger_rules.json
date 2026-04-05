@@ -1,0 +1,25 @@
+{
+  "trigger_rules": [
+    {"trigger": "audit my site", "workflow": "WORKFLOW_A", "weight": 1.0},
+    {"trigger": "full seo", "workflow": "WORKFLOW_A", "weight": 0.95},
+    {"trigger": "complete audit", "workflow": "WORKFLOW_A", "weight": 0.95},
+    {"trigger": "seo health", "workflow": "WORKFLOW_A", "weight": 0.9},
+    {"trigger": "keyword research", "workflow": "WORKFLOW_B", "weight": 1.0},
+    {"trigger": "find keywords", "workflow": "WORKFLOW_B", "weight": 0.9},
+    {"trigger": "keyword analysis", "workflow": "WORKFLOW_B", "weight": 0.9},
+    {"trigger": "ai visibility", "workflow": "WORKFLOW_C", "weight": 1.0},
+    {"trigger": "geo", "workflow": "WORKFLOW_C", "weight": 0.95},
+    {"trigger": "ai citations", "workflow": "WORKFLOW_C", "weight": 0.9},
+    {"trigger": "llmo", "workflow": "WORKFLOW_C", "weight": 0.85},
+    {"trigger": "write article", "workflow": "WORKFLOW_D", "weight": 1.0},
+    {"trigger": "generate content", "workflow": "WORKFLOW_D", "weight": 0.95},
+    {"trigger": "geo article", "workflow": "WORKFLOW_D", "weight": 0.95}
+  ],
+  "fallback_logic": {
+    "no_trigger_matched": "WORKFLOW_A",
+    "url_only": "WORKFLOW_A",
+    "url_plus_keywords": "WORKFLOW_B",
+    "brand_plus_url": "WORKFLOW_C",
+    "keywords_only": "WORKFLOW_D"
+  }
+}
