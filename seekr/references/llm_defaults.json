@@ -1,0 +1,20 @@
+{
+  "dispatch_modes": {
+    "prompt": {
+      "provider": "gemini",
+      "temperature": 0.7,
+      "max_tokens": 4096
+    },
+    "article": {
+      "provider": "claude",
+      "temperature": 0.5,
+      "max_tokens": 8192
+    }
+  },
+  "provider_models": {
+    "gemini": "gemini-2.0-flash",
+    "claude": "claude-sonnet-4-20250514",
+    "openai_compatible": "deepseek-chat"
+  },
+  "timeout": 120
+}

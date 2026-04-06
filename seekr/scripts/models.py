@@ -209,6 +209,19 @@ class EvolutionReport:
     parity_summary: Optional[ParityReport]
 
 
+@dataclass(frozen=True)
+class LLMResult:
+    """Result from an LLM dispatch call."""
+    provider: str  # "gemini" | "claude" | "openai_compatible"
+    model: str
+    mode: str  # "prompt" | "article"
+    text: str
+    input_tokens: int
+    output_tokens: int
+    elapsed_ms: int
+    error: Optional[str]  # None on success
+
+
 # ---------------------------------------------------------------------------
 # Factory helpers
 # ---------------------------------------------------------------------------

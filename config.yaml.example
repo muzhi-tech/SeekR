@@ -1,0 +1,35 @@
+# SeekR LLM Dispatcher Configuration
+# Copy this file to config.yaml and fill in your API keys.
+# config.yaml is git-ignored — your keys stay local.
+
+providers:
+  gemini:
+    api_key: ""                          # Google AI Studio API key
+    model: "gemini-2.0-flash"           # gemini-2.5-pro, gemini-2.0-flash, etc.
+    api_base: ""                         # Leave empty for official endpoint
+
+  claude:
+    api_key: ""                          # Anthropic API key
+    model: "claude-sonnet-4-20250514"   # claude-sonnet-4-20250514, claude-haiku-4-5-20251001, etc.
+    api_base: ""                         # Leave empty for official endpoint
+
+  openai_compatible:
+    api_key: ""                          # Your API key
+    model: "deepseek-chat"              # Any OpenAI-compatible model name
+    api_base: "https://api.deepseek.com/v1"  # Required for non-OpenAI providers
+                                          # Ollama: http://localhost:11434/v1
+                                          # DeepSeek: https://api.deepseek.com/v1
+                                          # OpenAI: https://api.openai.com/v1
+
+dispatch:
+  prompt:
+    provider: "gemini"                   # Default for content briefs, outlines, research
+    temperature: 0.7
+    max_tokens: 4096
+
+  article:
+    provider: "claude"                   # Default for full GEO article generation
+    temperature: 0.5
+    max_tokens: 8192
+
+  timeout: 120                           # Global timeout in seconds
