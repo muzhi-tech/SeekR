@@ -59,6 +59,58 @@ SeekR is the **central orchestrator** for automated SEO+GEO optimization of Engl
 
 **Silent execution protocol — never ask, never stop, always complete.**
 
+---
+
+## Phase 0 — Skill Dependency Pre-flight Check
+
+**MANDATORY: Run this phase BEFORE executing any workflow (A/B/C/D).**
+
+### Step 0.1: Run install.py
+
+```bash
+# Check all dependencies (fast, <2s)
+python seekr/install.py
+
+# If missing skills found, auto-install:
+python seekr/install.py --install
+
+# Check only one workflow's dependencies:
+python seekr/install.py --workflow A
+```
+
+### Step 0.2: Verify critical skills exist
+
+```
+IF python seekr/install.py reports 0 missing:
+  → All dependencies satisfied, proceed to Intent Recognition
+
+IF missing skills remain after --install:
+  → For each missing skill, run: Skill tool with skill="find-skills" and args="<skill-name>"
+  → Install discovered skills manually
+  → If critical skills (seo-technical, geo-audit) cannot be found:
+    → Inform user and suggest: python seekr/install.py --verbose
+  → Proceed with available skills only (mark missing as SKIPPED in report)
+```
+
+### Skill Dependency Map (per Workflow)
+
+| Workflow | Required Skills |
+|---|---|
+| **A — Full Audit** | seo-technical, seo-content, seo-schema, seo-competitor-pages, geo-audit, geo-ai-visibility, geo-brand-mentions, backlink-analyzer, domain-authority-auditor, seo-sitemap |
+| **B — Keyword** | keyword-research, serp-analysis, content-gap-analysis, seo-technical, seo-content, seo-schema, meta-tags-optimizer, seo-page |
+| **C — AI Visibility** | seo-geo-analyzer, geo-citability, geo-brand-mentions, geo-platform-optimizer, geo-schema, geo-content, geo-technical, geo-llmstxt, geo-crawlers |
+| **D — Article** | keyword-research, serp-analysis, content-gap-analysis, seo-content-writer, geo-content-optimizer, schema-markup-generator, rank-tracker |
+
+### Quick Inline Check (fallback when install.py unavailable)
+
+```
+Use Glob to verify: ~/.claude/skills/<skill-name>/SKILL.md exists
+Use Glob to verify: ~/.claude/agents/<agent-name>.md exists
+For each missing skill → attempt: Skill tool with skill="find-skills" args="<skill-name>"
+```
+
+---
+
 ## Intent Recognition Router
 
 ### Trigger Word Matrix
