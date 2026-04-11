@@ -1,0 +1,94 @@
+{
+  "$schema": "Execution metric schema for SeekR Evolution Engine",
+  "description": "Schema for metrics collected per SeekR workflow execution",
+  "required_fields": [
+    "execution_id",
+    "timestamp",
+    "workflow",
+    "skill_name",
+    "skill_version",
+    "sheep_scores",
+    "gem_score",
+    "findings_count",
+    "duration_ms",
+    "error_count"
+  ],
+  "properties": {
+    "execution_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the execution"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "ISO8601",
+      "description": "Execution timestamp"
+    },
+    "workflow": {
+      "type": "string",
+      "enum": ["WORKFLOW_A", "WORKFLOW_B", "WORKFLOW_C", "WORKFLOW_D"],
+      "description": "Which workflow was executed"
+    },
+    "skill_name": {
+      "type": "string",
+      "description": "Name of the skill that produced this metric"
+    },
+    "skill_version": {
+      "type": "string",
+      "format": "semver",
+      "description": "Version of the skill"
+    },
+    "sheep_scores": {
+      "type": "object",
+      "description": "SHEEP dimension scores with weights",
+      "properties": {
+        "S_semantic_coverage": { "raw": "0-100", "weight": 0.25 },
+        "H_human_credibility": { "raw": "0-100", "weight": 0.25 },
+        "E1_evidence_structuring": { "raw": "0-100", "weight": 0.20 },
+        "E2_ecosystem_integration": { "raw": "0-100", "weight": 0.15 },
+        "P_performance_monitoring": { "raw": "0-100", "weight": 0.15 }
+      }
+    },
+    "gem_score": {
+      "type": "number",
+      "min": 0,
+      "max": 100,
+      "description": "Weighted average of all SHEEP dimensions"
+    },
+    "findings_count": {
+      "type": "object",
+      "properties": {
+        "critical": { "type": "integer" },
+        "high": { "type": "integer" },
+        "medium": { "type": "integer" },
+        "low": { "type": "integer" }
+      }
+    },
+    "duration_ms": {
+      "type": "integer",
+      "description": "Execution duration in milliseconds"
+    },
+    "error_count": {
+      "type": "integer",
+      "description": "Number of errors encountered"
+    }
+  },
+  "example": {
+    "execution_id": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2026-04-11T08:30:00Z",
+    "workflow": "WORKFLOW_A",
+    "skill_name": "seo-technical",
+    "skill_version": "1.2.0",
+    "sheep_scores": {
+      "S_semantic_coverage": { "raw": 74, "weight": 0.25 },
+      "H_human_credibility": { "raw": 68, "weight": 0.25 },
+      "E1_evidence_structuring": { "raw": 72, "weight": 0.20 },
+      "E2_ecosystem_integration": { "raw": 70, "weight": 0.15 },
+      "P_performance_monitoring": { "raw": 78, "weight": 0.15 }
+    },
+    "gem_score": 72.1,
+    "findings_count": { "critical": 2, "high": 5, "medium": 12, "low": 8 },
+    "duration_ms": 45230,
+    "error_count": 0
+  }
+}

@@ -17,8 +17,8 @@ from typing import Any, Dict, List, Optional, Tuple
 # ---------------------------------------------------------------------------
 # Ensure seekr.scripts.models is importable
 # ---------------------------------------------------------------------------
-_PROJECT_ROOT = Path(__file__).resolve().parents[2]  # seekr/
-sys.path.insert(0, str(_PROJECT_ROOT))
+from _path_setup import ensure_paths  # noqa: E402
+ensure_paths()
 
 from seekr.scripts.models import (  # noqa: E402
     ParityCheck,

@@ -65,55 +65,27 @@ SeekR is the **central orchestrator** for automated SEO+GEO optimization of Engl
 
 **MANDATORY: Run this phase BEFORE executing any workflow (A/B/C/D).**
 
-### Step 0.1: Run install.py
-
 ```bash
-# Check all dependencies (fast, <2s)
-python seekr/install.py
-
-# If missing skills found, auto-install:
-python seekr/install.py --install
-
-# Check only one workflow's dependencies:
-python seekr/install.py --workflow A
+python seekr/install.py              # Check all dependencies (<2s)
+python seekr/install.py --install    # Auto-install missing skills
+python seekr/install.py --workflow A # Check one workflow only
 ```
 
-### Step 0.2: Verify critical skills exist
-
 ```
-IF python seekr/install.py reports 0 missing:
-  → All dependencies satisfied, proceed to Intent Recognition
-
-IF missing skills remain after --install:
-  → For each missing skill, run: Skill tool with skill="find-skills" and args="<skill-name>"
-  → Install discovered skills manually
-  → If critical skills (seo-technical, geo-audit) cannot be found:
-    → Inform user and suggest: python seekr/install.py --verbose
-  → Proceed with available skills only (mark missing as SKIPPED in report)
+IF 0 missing → proceed to Intent Recognition
+IF missing remain → Skill tool with skill="find-skills" args="<skill-name>"
+IF critical (seo-technical, geo-audit) unavailable → inform user, proceed with available only
 ```
 
-### Skill Dependency Map (per Workflow)
-
-| Workflow | Required Skills |
-|---|---|
-| **A — Full Audit** | seo-technical, seo-content, seo-schema, seo-competitor-pages, geo-audit, geo-ai-visibility, geo-brand-mentions, backlink-analyzer, domain-authority-auditor, seo-sitemap |
-| **B — Keyword** | keyword-research, serp-analysis, content-gap-analysis, seo-technical, seo-content, seo-schema, meta-tags-optimizer, seo-page |
-| **C — AI Visibility** | seo-geo-analyzer, geo-citability, geo-brand-mentions, geo-platform-optimizer, geo-schema, geo-content, geo-technical, geo-llmstxt, geo-crawlers |
-| **D — Article** | keyword-research, serp-analysis, content-gap-analysis, seo-content-writer, geo-content-optimizer, schema-markup-generator, rank-tracker |
-
-### Quick Inline Check (fallback when install.py unavailable)
-
-```
-Use Glob to verify: ~/.claude/skills/<skill-name>/SKILL.md exists
-Use Glob to verify: ~/.claude/agents/<agent-name>.md exists
-For each missing skill → attempt: Skill tool with skill="find-skills" args="<skill-name>"
-```
+Fallback (install.py unavailable): Use Glob to verify `~/.claude/skills/<name>/SKILL.md` exists.
 
 ---
 
 ## Intent Recognition Router
 
 ### Trigger Word Matrix
+
+> Detailed routing rules with priority and pattern matching: see `seekr/references/trigger_rules.json`
 
 | Category | EN Triggers | ZH Triggers | Workflow |
 |---|---|---|---|
@@ -131,20 +103,8 @@ For each missing skill → attempt: Skill tool with skill="find-skills" args="<s
 ### Fallback Logic
 
 ```
-IF no trigger words matched:
-  → Default to Workflow A (Full Audit) with URL provided
-
-IF user provides URL only:
-  → Default to Workflow A (Full Audit)
-
-IF user provides URL + keywords:
-  → Default to Workflow B (Keyword-Driven Content Optimization)
-
-IF user provides brand/entity name + URL:
-  → Default to Workflow C (GEO AI Visibility)
-
-IF user provides keyword(s) only:
-  → Default to Workflow D (GEO Article Generation)
+URL only → Workflow A | URL + keywords → B | Brand + URL → C | Keywords only → D
+No match → Default to Workflow A (Full Audit)
 ```
 
 ## SHEEP Framework Scoring
@@ -206,12 +166,12 @@ Auto-detect high-opportunity keywords → Auto-queue Workflow D
 
 ### Edge Cases (Workflow A)
 
-| Blockage | Default Action |
+| Blockage | Action |
 |---|---|
-| URL returns 5xx | Skip page, note in appendix, continue |
-| No sitemap found | Fall back to link crawling (max 50 pages) |
-| Sub-skill times out (>60s) | Log timeout, return PARTIAL status |
-| Daily audit complete | **Auto-trigger Workflow D** for high-opportunity keywords |
+| URL 5xx | Skip page, note, continue |
+| No sitemap | Crawl links (max 50 pages) |
+| Sub-skill timeout (>60s) | Log, return PARTIAL |
+| Daily audit done | **Auto-trigger Workflow D** |
 
 ---
 
@@ -227,25 +187,19 @@ INVOKE serp-analysis (per keyword)
 INVOKE content-gap-analysis
 ```
 
-### Phase B2: Content Audit for Target Keywords
+### Phase B2: Content Audit
 ```
-- Check current ranking position
-- Audit pages targeting this keyword
-- Identify content gaps vs. competitors
+Check ranking → Audit targeting pages → Identify content gaps vs. competitors
 ```
 
-### Phase B3: Content Optimization Briefs
+### Phase B3: Optimization Briefs
 ```
-- Generate content optimization brief
-- INVOKE seo-content → optimized content outline
-- INVOKE seo-schema → schema opportunities
+Generate brief → INVOKE seo-content (outline) → INVOKE seo-schema (opportunities)
 ```
 
 ### Phase B4: Tracking Plan
 ```
-1. Define tracking metrics
-2. Generate tracking spreadsheet template
-3. Set up geo-report entry for AI citation tracking
+Define metrics → Generate tracking template → Set up geo-report for AI citation tracking
 ```
 
 ---
@@ -261,24 +215,19 @@ INVOKE seo-geo-analyzer
 INVOKE geo-citability
 ```
 
-### Phase C2: Citation Opportunity Identification
+### Phase C2: Citation Opportunities
 ```
-1. Search AI responses (Perplexity/ChatGPT)
-2. INVOKE geo-brand-mentions
-3. INVOKE geo-platform-optimizer
+Search AI responses (Perplexity/ChatGPT) → INVOKE geo-brand-mentions → INVOKE geo-platform-optimizer
 ```
 
-### Phase C3: Entity & Content Optimization
+### Phase C3: Entity & Content
 ```
-INVOKE geo-schema → Organization/Person schema
-INVOKE geo-content → Optimize for AI citation
-INVOKE geo-technical → Check/create llms.txt
+INVOKE geo-schema (Organization/Person) → geo-content (AI citation) → geo-technical (llms.txt)
 ```
 
-### Phase C4: Citation Tracking Setup
+### Phase C4: Tracking Setup
 ```
-Create AI citation tracking spreadsheet
-INVOKE geo-report → Generate GEO progress report
+Create citation tracking spreadsheet → INVOKE geo-report → GEO progress report
 ```
 
 ---
@@ -305,99 +254,25 @@ Determine article angle:
 
 ### Phase D3: GEO-Optimized Article Writing
 ```
-Generate article structure:
-
-# [Target Keyword] — The Definitive Guide/[Year]
-
-## Introduction (150 words max, direct answer first)
-
-## [H2: Core Topic Section]
-### [H3: Sub-point with statistics]
-
-## [H2: How-To / Step-by-Step Section]
-
-## [H2: FAQ Section]
-6-8 questions from People Also Ask
-
-## [H2: Expert Analysis / Data Section]
-3-5 statistics with source citations
-
-## Conclusion
+Structure: Title → Introduction (150w, direct answer) → Core H2+H3 → How-To → FAQ (6-8 PAA) → Expert Data (3-5 stats) → Conclusion
+Target: 2000-3000 words
 ```
 
 ### Phase D4: Schema Markup
 ```
-INVOKE schema-markup-generator
-Output JSON-LD:
-  1. Article Schema
-  2. FAQPage Schema (if FAQ section)
-  3. BreadcrumbList Schema
+INVOKE schema-markup-generator → JSON-LD: Article, FAQPage, BreadcrumbList
 ```
 
-### Phase D5: GEO Content Optimization
+### Phase D5: GEO Optimization
 ```
-- Add quotable passages with statistics
-- Strengthen E-E-A-T signals
-- Add FAQ blocks (3-5 questions)
-- Ensure Perplexity optimization (H2→H3→bullet)
-- Ensure Google AI Overview (first 150 words direct answer)
+Quotable stats + E-E-A-T signals + FAQ blocks + Perplexity (H2→H3→bullet) + AI Overview (150w direct answer)
 ```
 
 ---
 
 ## Report Output Template
 
-```
-# Full SEO+GEO Audit Report: [Site Name]
-
-**Date:** [ISO8601]
-**URL:** [URL]
-**Business Type:** [Detected]
-**Overall Score:** [X]/100 (SEO: [X] | GEM: [X])
-
----
-
-## Executive Summary
-
-[2-3 paragraph synthesis of SEO + GEO health]
-
-## SHEEP Score Breakdown
-
-| Dimension | Score | Weight | Weighted |
-|---|---|---|---|
-| S - Semantic Coverage | [X]/100 | 25% | [X] |
-| H - Human Credibility | [X]/100 | 25% | [X] |
-| E1 - Evidence Structuring | [X]/100 | 20% | [X] |
-| E2 - Ecosystem Integration | [X]/100 | 15% | [X] |
-| P - Performance Monitoring | [X]/100 | 15% | [X] |
-| **GEM Score** | | | **[X]/100** |
-
-## SEO Findings
-
-[Findings grouped by severity]
-
-## GEO Findings (SHEEP)
-
-[Findings grouped by SHEEP dimension]
-
-## Quick Wins (This Week)
-
-1. [Actionable item]
-
-## 30-Day Action Plan
-
-### Week 1: Technical Foundation
-- [ ]
-
-### Week 2: Content & GEO
-- [ ]
-
-### Week 3: Optimization
-- [ ]
-
-### Week 4: Authority Building
-- [ ]
-```
+→ 使用 `seekr/references/report-template.md` 作为报告输出模板
 
 ---
 
@@ -407,33 +282,11 @@ Output JSON-LD:
 用户: 帮我审计 https://example.com 的SEO和GEO
 
 Claude: 正在执行SeekR全站审计...
-
-1. 获取sitemap.xml...
-2. 分析主要页面...
-3. 执行并行子技能...
-   - seo-technical ✓
-   - seo-content ✓
-   - seo-schema ✓
-   - geo-audit ✓
-   - geo-brand-mentions ✓
-4. 计算SHEEP评分...
-5. 生成优化建议...
-
-═══════════════════════════════════════
-  SEO+GEO Audit Report: example.com
-═══════════════════════════════════════
-
-GEM Score: 72/100 (B级)
-
-SHEEP Breakdown:
-  S: 75  H: 68  E1: 72  E2: 70  P: 78
-
-Quick Wins:
-  1. 添加FAQ Schema到产品页
-  2. 更新90天未更新的博客内容
-  3. 添加作者凭证到所有文章
-
-自动触发: 正在为高机会关键词生成GEO文章...
+1. 获取sitemap.xml → 48 URLs
+2. 执行并行子技能 → seo-technical ✓ seo-content ✓ geo-audit ✓
+3. SHEEP评分 → S:75 H:68 E1:72 E2:70 P:78 → GEM: 72/100
+4. Quick Wins: 添加FAQ Schema, 更新博客内容, 添加作者凭证
+5. 自动触发 Workflow D → 生成GEO文章...
 ```
 
 ---
@@ -441,8 +294,6 @@ Quick Wins:
 ## Related Skills
 
 - `seo-technical` - Technical SEO audit
-- `seo-content` - Content quality & E-E-A-T
-- `seo-schema` - Schema markup validation
 - `geo-audit` - AI citability audit
-- `geo-brand-mentions` - Brand presence analysis
 - `seekr-evolve` - Self-evolution engine
+- 完整列表见 `SKILLS-REGISTRY.json`

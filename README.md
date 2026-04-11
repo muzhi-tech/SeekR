@@ -13,42 +13,52 @@ SeekR is an autonomous SEO and Generative Engine Optimization (GEO) agent design
 - **Self-Evolution Engine** — Monitors SHEEP scores over time, detects degradation, generates optimization strategies, validates via A/B testing, and promotes winners automatically
 - **Zero Confirmation Workflow** — Never asks "should I continue?" — executes the full pipeline from URL to published content
 
+## Prerequisites
+
+- **Python 3.8+**
+- **Claude Code >= 1.0**
+- At least one LLM API Key (Gemini / Claude / OpenAI-compatible)
+- 30+ SEO/GEO sub-skills (managed automatically by `install.py`)
+
 ## Quick Start
 
-```bash
-# Full site audit + auto article generation
-/seo-geo-master-orchestrator audit my site https://yoursite.com
+1. **Install dependencies**
+   ```bash
+   python install.py init        # Interactive API key configuration
+   python install.py --install   # Check and install required skills
+   python install.py validate    # Verify installation integrity
+   ```
 
-# GEO article generation
-/seo-geo-master-orchestrator write GEO article "best AI tools 2026"
-
-# Trigger self-evolution cycle
-/seo-geo-evolution-engine evolve
-```
+2. **Run audit**
+   ```
+   /seekr audit my site https://yoursite.com
+   ```
 
 ## Architecture
 
 ```
-User Request → seo-geo-master-orchestrator
-                    ↓
-         ┌──────────────────────────────────────┐
-         │  Workflow A: Full SEO+GEO Audit      │
-         │  Workflow B: Keyword Optimization    │
-         │  Workflow C: GEO Visibility Plan     │
-         │  Workflow D: GEO Article Generation  │
-         └──────────────┬───────────────────────┘
-                        ↓
+User Request → /seekr
+                    |
+         +-----------------------------+
+         |  Workflow A: Full SEO+GEO Audit      |
+         |  Workflow B: Keyword Optimization    |
+         |  Workflow C: GEO Visibility Plan     |
+         |  Workflow D: GEO Article Generation  |
+         +--------------+----------------+
+                        |
          geo_optimizer.py (SHEEP Scoring)
-                        ↓
-         geoclaw/evolution-metrics/<id>.json
-                        ↓
-         seo-geo-evolution-engine
-         ┌──────────────────────────────────────┐
-         │  Metrics Collector → Pattern Recognizer│
-         │  → Strategy Generator → A/B Testing   │
-         │  → Snapshot Versioning → Parity Audit │
-         └──────────────────────────────────────┘
+                        |
+         seekr-evolve/evolution-metrics/<id>.json
+                        |
+         /seekr-evolve
+         +-----------------------------+
+         |  Metrics Collector > Pattern Recognizer |
+         |  > Strategy Generator > A/B Testing     |
+         |  > Snapshot Versioning > Parity Audit   |
+         +-----------------------------+
 ```
+
+For detailed skill design, see [seekr/SKILL.md](seekr/SKILL.md) and [seekr-evolve/SKILL.md](seekr-evolve/SKILL.md).
 
 ## SHEEP Framework
 
@@ -62,11 +72,11 @@ SeekR uses the **SHEEP framework** for GEO scoring:
 | **E2** — Ecosystem Integration | 15% | Brand mentions, external links, social |
 | **P** — Performance Monitoring | 15% | Content freshness, technical speed |
 
-**GEM Score** = Weighted sum across all 5 dimensions (0–100)
+**GEM Score** = Weighted sum across all 5 dimensions (0-100)
 
 ## Skills Ecosystem
 
-SeekR integrates 50+ SEO/GEO skills including:
+SeekR integrates 30+ SEO/GEO skills including:
 
 - `seo-technical`, `seo-content`, `seo-schema`, `seo-audit`
 - `geo-audit`, `geo-citability`, `geo-crawlers`, `geo-llmstxt`
@@ -79,6 +89,14 @@ SeekR integrates 50+ SEO/GEO skills including:
 - **Evolution**: Python + JSON snapshots + A/B testing
 - **Scoring**: SHEEP/GEM framework (geo_optimizer.py)
 - **Content**: Markdown output with inline JSON-LD (CMS-ready)
+
+## Troubleshooting
+
+| Problem | Solution |
+|---|---|
+| "Missing skill xxx" | Run `python install.py --install` or `claude /find-skills xxx` |
+| "API key for 'xxx' is empty" | Run `python install.py init` to reconfigure |
+| "config.yaml not found" | Copy from `config.yaml.example` or run `python install.py init` |
 
 ## License
 

@@ -21,8 +21,8 @@ from typing import Any, Dict, List, Optional
 # ---------------------------------------------------------------------------
 _SCRIPTS_DIR = Path(__file__).resolve().parent
 _PROJECT_ROOT = _SCRIPTS_DIR.parents[1]  # seekr/
-sys.path.insert(0, str(_SCRIPTS_DIR))
-sys.path.insert(0, str(_PROJECT_ROOT))
+from _path_setup import ensure_paths  # noqa: E402
+ensure_paths()
 
 from effect_collector import (  # noqa: E402
     DegradationDetector,
@@ -63,7 +63,11 @@ def _get_parity_auditor():
 # ---------------------------------------------------------------------------
 # Directory constants
 # ---------------------------------------------------------------------------
-METRICS_DIR = str(_SCRIPTS_DIR.parent / "evolution-metrics")
+# Both the orchestrator (sheep_scorer.py) and evolution engine must agree on
+# the same metrics directory.  The orchestrator writes to
+#   <project_root>/seekr/evolution-metrics/
+# so we read from the same place.
+METRICS_DIR = str(_PROJECT_ROOT / "seekr" / "evolution-metrics")
 REPORTS_DIR = str(_PROJECT_ROOT / "reports")
 SEEKR_DIR = str(_PROJECT_ROOT / "seekr")
 

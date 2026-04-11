@@ -1,12 +1,12 @@
 {
   "registry_version": "1.0.0",
   "generated_at": "2026-04-03T00:00:00Z",
-  "description": "SEO/GEO Skills Registry for seo-geo-master-orchestrator and seo-geo-evolution-engine",
+  "description": "SEO/GEO Skills Registry for seekr and seekr-evolve",
 
   "orchestrator": {
-    "skill_id": "seo-geo-master-orchestrator",
+    "skill_id": "seekr",
     "version": "1.0.0",
-    "location": "~/.claude/skills/seo-geo-master-orchestrator/SKILL.md",
+    "location": "~/.claude/skills/seekr/SKILL.md",
     "workflows": ["WORKFLOW_A", "WORKFLOW_B", "WORKFLOW_C", "WORKFLOW_D"],
     "entry_points": [
       "seo", "geo", "geo-site-audit", "seo-audit",
@@ -16,9 +16,9 @@
   },
 
   "evolution_engine": {
-    "skill_id": "seo-geo-evolution-engine",
+    "skill_id": "seekr-evolve",
     "version": "1.0.0",
-    "location": "~/.claude/skills/seo-geo-evolution-engine/SKILL.md",
+    "location": "~/.claude/skills/seekr-evolve/SKILL.md",
     "components": [
       "EffectCollector",
       "PatternRecognizer",
@@ -292,7 +292,7 @@
       "location": "D:/project/trae/geo-seo-openclaw-skills/scripts/geo_optimizer.py",
       "purpose": "SHEEP framework scoring engine",
       "outputs": ["S_semantic_coverage", "H_human_credibility", "E1_evidence_structuring", "E2_ecosystem_integration", "P_performance_monitoring"],
-      "used_by": ["seo-geo-master-orchestrator", "seo-geo-evolution-engine"]
+      "used_by": ["seekr", "seekr-evolve"]
     },
     "platforms_json": {
       "location": "D:/project/trae/geo-seo-openclaw-skills/config/platforms.json",

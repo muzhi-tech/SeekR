@@ -17,6 +17,9 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Literal, Optional
 
+from _path_setup import ensure_paths  # noqa: E402
+ensure_paths()
+
 from seekr.scripts.models import (
     ABTestConfig,
     ABTestResult,

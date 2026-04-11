@@ -9,6 +9,9 @@ from __future__ import annotations
 import uuid
 from typing import Dict, List, Optional
 
+from _path_setup import ensure_paths  # noqa: E402
+ensure_paths()
+
 from seekr.scripts.models import (
     DIMENSIONS,
     DIMENSION_WEIGHTS,

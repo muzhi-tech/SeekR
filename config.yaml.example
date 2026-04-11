@@ -9,17 +9,22 @@ providers:
     api_base: ""                         # Leave empty for official endpoint
 
   claude:
-    api_key: ""                          # Anthropic API key
+    api_key: ""                          # Anthropic API key or proxy key
     model: "claude-sonnet-4-20250514"   # claude-sonnet-4-20250514, claude-haiku-4-5-20251001, etc.
-    api_base: ""                         # Leave empty for official endpoint
+    api_base: ""                         # Leave empty for official Anthropic endpoint
+                                         # Proxy services (302.ai, OpenRouter, etc.):
+                                         #   "https://api.302.ai/v1"
+                                         #   "https://openrouter.ai/api/v1"
+                                         # Auto-detects: proxy → OpenAI-compatible format
+                                         #               official → Anthropic native format
 
   openai_compatible:
     api_key: ""                          # Your API key
     model: "deepseek-chat"              # Any OpenAI-compatible model name
     api_base: "https://api.deepseek.com/v1"  # Required for non-OpenAI providers
-                                          # Ollama: http://localhost:11434/v1
-                                          # DeepSeek: https://api.deepseek.com/v1
-                                          # OpenAI: https://api.openai.com/v1
+                                         # Ollama: http://localhost:11434/v1
+                                         # DeepSeek: https://api.deepseek.com/v1
+                                         # OpenAI: https://api.openai.com/v1
 
 dispatch:
   prompt:
@@ -33,3 +38,31 @@ dispatch:
     max_tokens: 8192
 
   timeout: 120                           # Global timeout in seconds
+
+
+# ── Example: All providers via 302.ai proxy ──────────────────────
+# providers:
+#   gemini:
+#     api_key: "sk-xxx"
+#     model: "gemini-2.0-flash"
+#     api_base: "https://api.302.ai/v1"
+#
+#   claude:
+#     api_key: "sk-xxx"
+#     model: "claude-sonnet-4-6"
+#     api_base: "https://api.302.ai/v1"
+#     # Auto-detected as proxy → uses /chat/completions + Bearer auth
+#
+#   openai_compatible:
+#     api_key: "sk-xxx"
+#     model: "deepseek-chat"
+#     api_base: "https://api.302.ai/v1"
+#
+# dispatch:
+#   prompt:
+#     provider: "gemini"
+#     model: "gemini-2.0-flash"
+#   article:
+#     provider: "claude"
+#     model: "claude-sonnet-4-6"
+#   timeout: 120

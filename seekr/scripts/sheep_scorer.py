@@ -499,7 +499,17 @@ class SheepScorer:
     # Execution metric writer
     # ------------------------------------------------------------------
 
-    def write_execution_metric(self, result: Dict, output_dir: str) -> str:
+    def write_execution_metric(
+        self,
+        result: Dict,
+        output_dir: str,
+        workflow: str = "UNKNOWN",
+        skill_name: str = "seekr",
+        skill_version: str = "1.0.0",
+        findings_count: Optional[Dict] = None,
+        duration_ms: int = 0,
+        error_count: int = 0,
+    ) -> str:
         """Write scoring result to evolution-metrics/ as a JSON file.
 
         Returns the path of the written file.
@@ -514,11 +524,17 @@ class SheepScorer:
         metric = {
             "execution_id": new_execution_id(),
             "timestamp": timestamp,
+            "workflow": workflow,
+            "skill_name": skill_name,
+            "skill_version": skill_version,
             "sheep_scores": result.get("sheep_scores", {}),
             "gem_score": result.get("gem_score", 0),
             "gem_band": result.get("gem_band", "F"),
             "dimension_details": result.get("dimension_details", {}),
             "platform_adjusted": result.get("platform_adjusted", {}),
+            "findings_count": findings_count if findings_count is not None else {},
+            "duration_ms": duration_ms,
+            "error_count": error_count,
         }
 
         with open(filepath, "w", encoding="utf-8") as fh:

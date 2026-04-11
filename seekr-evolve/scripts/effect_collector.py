@@ -18,8 +18,8 @@ from typing import Any, Dict, List, Optional, Tuple
 # ---------------------------------------------------------------------------
 # Ensure seekr.scripts.models is importable
 # ---------------------------------------------------------------------------
-_PROJECT_ROOT = Path(__file__).resolve().parents[2]  # seekr/
-sys.path.insert(0, str(_PROJECT_ROOT))
+from _path_setup import ensure_paths  # noqa: E402
+ensure_paths()
 
 from seekr.scripts.models import (  # noqa: E402
     CRITICAL_THRESHOLD,
@@ -590,7 +590,7 @@ def _generate_sample_data(directory: str, count: int = 50) -> None:
 # ===================================================================
 
 def main() -> None:
-    metrics_dir = str(Path(__file__).resolve().parents[1] / "evolution-metrics")
+    metrics_dir = str(Path(__file__).resolve().parents[2] / "seekr" / "evolution-metrics")
 
     # Generate sample data if directory is empty or missing
     if not Path(metrics_dir).is_dir() or not list(Path(metrics_dir).glob("*.json")):

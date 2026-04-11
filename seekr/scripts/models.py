@@ -6,6 +6,8 @@ All models use only Python stdlib.
 
 from __future__ import annotations
 
+import json
+import os
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
@@ -13,8 +15,47 @@ from typing import Dict, List, Literal, Optional
 
 
 # ---------------------------------------------------------------------------
-# SHEEP Constants
+# SHEEP Constants — single source from sheep_thresholds.json
 # ---------------------------------------------------------------------------
+
+_DIMENSION_KEY_MAP: Dict[str, str] = {
+    "S_semantic_coverage": "S",
+    "H_human_credibility": "H",
+    "E1_evidence_structuring": "E1",
+    "E2_ecosystem_integration": "E2",
+    "P_performance_monitoring": "P",
+}
+
+# Hardcoded defaults — used as fallback when sheep_thresholds.json is absent
+_DEFAULT_CRITICAL: Dict[str, int] = {"S": 55, "H": 50, "E1": 45, "E2": 40, "P": 45}
+_DEFAULT_WARNING: Dict[str, int] = {"S": 65, "H": 60, "E1": 55, "E2": 50, "P": 55}
+
+_THRESHOLDS_PATH = os.path.join(
+    os.path.dirname(__file__), os.pardir, "references", "sheep_thresholds.json"
+)
+
+
+def _load_thresholds() -> Dict[str, Dict[str, int]]:
+    """Load thresholds from sheep_thresholds.json. Returns {critical: {}, warning: {}}."""
+    path = os.path.normpath(_THRESHOLDS_PATH)
+    if not os.path.isfile(path):
+        return {"critical": dict(_DEFAULT_CRITICAL), "warning": dict(_DEFAULT_WARNING)}
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            data = json.load(fh)
+        dim_thresholds = data.get("dimension_thresholds", {})
+        critical: Dict[str, int] = {}
+        warning: Dict[str, int] = {}
+        for long_key, levels in dim_thresholds.items():
+            short = _DIMENSION_KEY_MAP.get(long_key, long_key)
+            critical[short] = levels.get("critical", _DEFAULT_CRITICAL.get(short, 0))
+            warning[short] = levels.get("warning", _DEFAULT_WARNING.get(short, 0))
+        return {"critical": critical, "warning": warning}
+    except (json.JSONDecodeError, TypeError, OSError):
+        return {"critical": dict(_DEFAULT_CRITICAL), "warning": dict(_DEFAULT_WARNING)}
+
+
+_thresholds = _load_thresholds()
 
 DIMENSIONS: Dict[str, str] = {
     "S": "Semantic Coverage",
@@ -32,21 +73,8 @@ DIMENSION_WEIGHTS: Dict[str, float] = {
     "P": 0.15,
 }
 
-CRITICAL_THRESHOLD: Dict[str, int] = {
-    "S": 55,
-    "H": 50,
-    "E1": 45,
-    "E2": 40,
-    "P": 45,
-}
-
-WARNING_THRESHOLD: Dict[str, int] = {
-    "S": 65,
-    "H": 60,
-    "E1": 55,
-    "E2": 50,
-    "P": 55,
-}
+CRITICAL_THRESHOLD: Dict[str, int] = _thresholds["critical"]
+WARNING_THRESHOLD: Dict[str, int] = _thresholds["warning"]
 
 
 # ---------------------------------------------------------------------------

@@ -252,10 +252,74 @@ def _call_gemini(prompt: str, system: str, provider_cfg: Dict[str, Any],
         return _make_error_result("gemini", model, mode, elapsed, f"Network error calling gemini: {e}")
 
 
+def _call_openai_format(provider_name: str, prompt: str, system: str,
+                        api_key: str, model: str, api_base: str,
+                        dispatch_cfg: Dict[str, Any], timeout: int,
+                        mode: str) -> "LLMResult":
+    """Call any OpenAI-compatible chat/completions endpoint.
+
+    Shared by ``_call_openai_compatible`` and ``_call_claude`` (proxy mode).
+    """
+    from seekr.scripts.models import LLMResult
+
+    url = f"{api_base.rstrip('/')}/chat/completions"
+
+    messages: list = []
+    if system:
+        messages.append({"role": "system", "content": system})
+    messages.append({"role": "user", "content": prompt})
+
+    body: Dict[str, Any] = {
+        "model": model,
+        "messages": messages,
+        "max_tokens": dispatch_cfg.get("max_tokens", 4096),
+    }
+    temperature = dispatch_cfg.get("temperature")
+    if temperature is not None:
+        body["temperature"] = temperature
+
+    req_data = json.dumps(body).encode("utf-8")
+    req = urllib.request.Request(
+        url, data=req_data, method="POST",
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}",
+        },
+    )
+
+    start = time.monotonic()
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            resp_data = json.loads(resp.read().decode("utf-8"))
+        elapsed = int((time.monotonic() - start) * 1000)
+
+        text = resp_data.get("choices", [{}])[0].get("message", {}).get("content", "")
+        usage = resp_data.get("usage", {})
+        return LLMResult(
+            provider=provider_name, model=model, mode=mode, text=text,
+            input_tokens=usage.get("prompt_tokens", 0),
+            output_tokens=usage.get("completion_tokens", 0),
+            elapsed_ms=elapsed, error=None,
+        )
+    except urllib.error.HTTPError as e:
+        elapsed = int((time.monotonic() - start) * 1000)
+        msg = _http_error_message(provider_name, e)
+        return _make_error_result(provider_name, model, mode, elapsed, msg)
+    except Exception as e:
+        elapsed = int((time.monotonic() - start) * 1000)
+        return _make_error_result(provider_name, model, mode, elapsed,
+                                  f"Network error calling {provider_name}: {e}")
+
+
 def _call_claude(prompt: str, system: str, provider_cfg: Dict[str, Any],
                  dispatch_cfg: Dict[str, Any], timeout: int,
                  mode: str) -> "LLMResult":
-    """Call Anthropic Claude REST API."""
+    """Call Anthropic Claude API.
+
+    When ``api_base`` is set to a proxy service (e.g. 302.ai) instead of the
+    official Anthropic endpoint, automatically switches to OpenAI-compatible
+    format (``/v1/chat/completions`` with ``Bearer`` auth).
+    """
     from seekr.scripts.models import LLMResult
 
     api_key = provider_cfg.get("api_key", "")
@@ -268,6 +332,16 @@ def _call_claude(prompt: str, system: str, provider_cfg: Dict[str, Any],
             f"API key for 'claude' is empty. Set providers.claude.api_key in config.yaml.",
         )
 
+    # --- Proxy detection: auto-switch to OpenAI-compatible format ---
+    is_proxy = api_base.rstrip("/") != _CLAUDE_BASE.rstrip("/")
+
+    if is_proxy:
+        return _call_openai_format(
+            "claude", prompt, system, api_key, model, api_base,
+            dispatch_cfg, timeout, mode,
+        )
+
+    # --- Native Anthropic format ---
     url = f"{api_base.rstrip('/')}/v1/messages"
 
     body: Dict[str, Any] = {
@@ -318,9 +392,7 @@ def _call_claude(prompt: str, system: str, provider_cfg: Dict[str, Any],
 def _call_openai_compatible(prompt: str, system: str, provider_cfg: Dict[str, Any],
                             dispatch_cfg: Dict[str, Any], timeout: int,
                             mode: str) -> "LLMResult":
-    """Call OpenAI-compatible API (DeepSeek, Ollama, etc.)."""
-    from seekr.scripts.models import LLMResult
-
+    """Call OpenAI-compatible API (DeepSeek, Ollama, 302.ai, etc.)."""
     api_key = provider_cfg.get("api_key", "")
     model = provider_cfg.get("model", "deepseek-chat")
     api_base = provider_cfg.get("api_base", "")
@@ -336,52 +408,10 @@ def _call_openai_compatible(prompt: str, system: str, provider_cfg: Dict[str, An
             "Provider 'openai_compatible' requires 'api_base' in config.yaml.",
         )
 
-    url = f"{api_base.rstrip('/')}/chat/completions"
-
-    messages = []
-    if system:
-        messages.append({"role": "system", "content": system})
-    messages.append({"role": "user", "content": prompt})
-
-    body: Dict[str, Any] = {
-        "model": model,
-        "messages": messages,
-        "max_tokens": dispatch_cfg.get("max_tokens", 4096),
-    }
-    temperature = dispatch_cfg.get("temperature")
-    if temperature is not None:
-        body["temperature"] = temperature
-
-    req_data = json.dumps(body).encode("utf-8")
-    req = urllib.request.Request(
-        url, data=req_data, method="POST",
-        headers={
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {api_key}",
-        },
+    return _call_openai_format(
+        "openai_compatible", prompt, system, api_key, model, api_base,
+        dispatch_cfg, timeout, mode,
     )
-
-    start = time.monotonic()
-    try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            resp_data = json.loads(resp.read().decode("utf-8"))
-        elapsed = int((time.monotonic() - start) * 1000)
-
-        text = resp_data.get("choices", [{}])[0].get("message", {}).get("content", "")
-        usage = resp_data.get("usage", {})
-        return LLMResult(
-            provider="openai_compatible", model=model, mode=mode, text=text,
-            input_tokens=usage.get("prompt_tokens", 0),
-            output_tokens=usage.get("completion_tokens", 0),
-            elapsed_ms=elapsed, error=None,
-        )
-    except urllib.error.HTTPError as e:
-        elapsed = int((time.monotonic() - start) * 1000)
-        msg = _http_error_message("openai_compatible", e)
-        return _make_error_result("openai_compatible", model, mode, elapsed, msg)
-    except Exception as e:
-        elapsed = int((time.monotonic() - start) * 1000)
-        return _make_error_result("openai_compatible", model, mode, elapsed, f"Network error calling openai_compatible: {e}")
 
 
 def _http_error_message(provider: str, err: urllib.error.HTTPError) -> str:
